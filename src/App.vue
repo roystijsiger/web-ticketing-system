@@ -4,13 +4,14 @@
       <div v-if="token" id="loginBox">
         Logged in as: <br />
         {{user.First_name.substr(0, 1)}}. {{user.Middle_name}} {{user.Last_name}} <br />
-        <a class="item" @click="Logout()">Logout</a>
+        <a class="link" @click="Logout()">Logout</a>
       </div>
       <h1>Ticketing System</h1>
     </header>
     <nav>
-      <router-link class="item" :to="{path: '/ticket/my'}">My Tickets</router-link>
-      <router-link class="item" :to="{path: '/ticket/new'}">New ticket</router-link>
+      <router-link class="link" :to="{path: '/'}">My Tickets</router-link>
+      <router-link class="link" :to="{path: '/task/categories'}">All Tickets</router-link>
+      <router-link class="link" :to="{path: '/task/new'}">New ticket</router-link>
     </nav>
      <div class='error' v-if="error.show">
       <p>{{error.message}}</p>
@@ -20,7 +21,7 @@
       <input v-model="password" type="password" name="txt_password" placeholder="password.." />
       <button @click="Login()">Login</button>
     </div>
-    <div id="content-wrapper">
+    <div id="content-wrapper" v-if="user">
       <router-view></router-view>
     </div>
   </div>
@@ -156,6 +157,21 @@ nav .item{
   border: 1px solid #FB9393;
   background-color: #FFC8C8;
   color: white;
+}
+
+.link{
+  margin: 0 5px 0 5px;
+  color: #6E6CBB;
+  text-decoration: none;
+}
+
+.link:hover{
+  color: #BB6C6C;
+}
+
+.link:visited{
+  color: #6E6CBB;
+  text-decoration: underline;
 }
 
 </style>
