@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 var ai = axios.create({
-    baseURL: "http://localhost:80/api-ticketing-system/index.php",
+    baseURL: "http://localhost:80/index.php",
     data: {
         license: "1234567899876554321",
         customer_id: "31090014"
