@@ -18,6 +18,11 @@
 						<td>:</td>
 						<td>{{users_id}}</td>
 					</tr>
+					<tr>
+						<td colspan="3">
+							<router-link tag="button" :to="{path: '/task/edit/' + task_id}">edit</router-link>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>

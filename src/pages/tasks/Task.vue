@@ -3,7 +3,13 @@
         <task v-if="task" :create_date="task.Create_date" :modified_date="task.Modified_date" :task_id="task.Id" :users_id="task.Users_id">{{task.Description}}</task>
 
         <div class="task_content">
+            <p v-if="!subTasks">No subtasks</p>
+            <SubTask v-for="task in subTasks" :key="task.Id" :task_id="task.Id  ">{{task.Description}}</subtask>
+        </div>
+        
+        <div class="task_content">
             <div class="time_spent">
+                <p v-if="!timeSpent">Nobody spent time on this task yet.</p>
                 <table v-if="timeSpent">
                     <thead>
                         <tr>
@@ -22,7 +28,10 @@
                 </table>
                 
             </div>
-            <div v-if="reactions" class="reactions">
+            <div class="reactions">
+                <p v-if="!reactions">
+                    Nobody reacted to this ticket yet..
+                </p>
                 <reaction v-for="reaction in reactions" :key="reaction.Id" :users_id="reaction.Users_id" :create_date="reaction.Create_date" :modified_date="reaction.Modified_date" :modified_user="reaction.Modified_date_users_id" :message="reaction.Message">{{reaction.Message}}</reaction>
             </div>
             <div class="clear"></div>
@@ -37,44 +46,24 @@
 </template>
 
 <script>
-    import {GetTask,GetTimeSpent, GetReactions, AddReaction} from '../../api';
+    import {GetTask,GetTimeSpent, GetReactions, AddReaction, GetChildren} from '../../api';
     import Task from '../../components/Task';
+    import SubTask from '../../components/SubTask';
     import Reaction from '../../components/Reaction';
 
     export default{
-        components : {Task, Reaction},
+        components : {Task, Reaction, SubTask},
         data(){
             return {
                 task: null,
                 timeSpent: null,
                 reactions: null,
-                reply: ""
+                reply: "",
+                subTasks: null
             }
         },
         mounted(){
-            GetTask(this.$route.params.task_id).then(response =>{
-                this.task = response.data.Task
-            }).catch(error => {
-                this.$parent.error.message = error.response.data.Error.Message;
-                this.$parent.error.show = true;
-            })
-            .finally(() =>{
-                GetTimeSpent(this.$route.params.task_id).then(response => {
-                    this.timeSpent = response.data.Time_spent
-                }).catch(error => {
-                    this.$parent.error.message = error.response.data.Error.Message;
-                    this.$parent.error.show = true;
-                }).finally(() =>{
-                    GetReactions(this.$route.params.task_id).then((response) => {
-                        this.reactions = response.data.Reactions
-                    }).catch(error => {
-                        this.$parent.error.message = error.response.data.Error.Message;
-                        this.$parent.error.show = true;
-                    })
-                })
-            })
-            
-            
+            this.GetCompleteTask();
         },
         methods : {
             Reply(){
@@ -85,6 +74,46 @@
                 }).finally(() => {
                     this.$router.go();
                 })
+            },
+            GetCompleteTask(){
+                GetTask(this.$route.params.task_id).then(response =>{
+                    this.task = response.data.Task
+                }).catch(error => {
+                    this.$parent.error.message = error.response.data.Error.Message
+                    this.$parent.error.show = true
+                    this.$parent.$emit('error')
+                })
+
+                GetChildren(this.$route.params.task_id).then(response =>{
+                    this.subTasks = response.data.Tasks
+                    this.$parent.$emit('error')
+                }).catch(error => {})
+                
+ 
+                GetTimeSpent(this.$route.params.task_id).then(response => {
+                        this.timeSpent = response.data.Time_spent
+                }).catch(error => {
+                        this.$parent.error.message = error.response.data.Error.Message
+                        this.$parent.error.show = true
+                        this.$parent.$emit('error')
+                })
+
+                GetReactions(this.$route.params.task_id).then((response) => {
+                        this.reactions = response.data.Reactions
+                }).catch(error => {
+                        this.$parent.error.message = error.response.data.Error.Message
+                        this.$parent.error.show = true
+                        this.$parent.$emit('error')
+                })
+        }
+        },
+        watch: {
+            '$route.params.task_id' : function(newId, oldId){
+                this.task = null;
+                this.timeSpent = null;
+                this.reactons = null;
+                this.subTasks = null;
+                this.GetCompleteTask();
             }
         }
     }

@@ -22,6 +22,7 @@
             }).catch(error => {
                 this.$parent.error.message = error.response.data.Error.Message;
                 this.$parent.error.show = true;
+                this.$parent.$emit('error');
             })
         }
     }

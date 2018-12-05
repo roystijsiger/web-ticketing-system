@@ -14,11 +14,24 @@
     .category{
         border: 1px solid #5FA6AA;
         background-color: #E0FAFC;
-        width: 960px;
+        width: 100%;
         margin: 10px auto;
+        min-width: 360px;
     }
 
     .category:hover{
         cursor: pointer;
+    }
+
+    @media screen and (min-width: 960px) {
+        .category{
+            width: 960px;
+        }
+    }
+
+    @media screen and (min-width: 1400px){
+        .category{
+            width: 1400px;
+        }
     }
 </style>

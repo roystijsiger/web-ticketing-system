@@ -70,10 +70,21 @@ export default {
       })
 
         
+    },
+    ClearError(){
+      setTimeout(() => {
+        this.error.show = false;
+      }, 3000)
     }
   },
   mounted(){
+    this.$on('error', function(){
+      this.ClearError();
+    })
+    //    localStorage.removeItem('user')
+    //    localStorage.removeItem('token')
     console.log(this.user)
+
   }
 }
 </script>
@@ -98,9 +109,10 @@ export default {
 /* header section */
 header{
   width: 100%;
-  height: 100px;
+  min-height: 100px;
   background-color: #5FA6AA;
   padding: 5px;
+  min-width: 360px;
 }
 
 header h1{
@@ -118,9 +130,10 @@ header h1{
 /* navigation section */
 nav{
   width: 100%;
-  height: 40px;
+  min-height: 40px;
   background-color: #E0FAFC;
   padding: 12.5px;
+  min-width: 360px;
 }
 
 nav .item{
